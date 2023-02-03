@@ -1,49 +1,18 @@
 #!/usr/bin/python3
-"""
-Defines the canUnlockAll function
+"""`canUnlockAll` module
 """
 
 
 def canUnlockAll(boxes):
+    """A method that determines if all `boxes` can be opened
+        @boxes: A list of list of positive ints
+        rtype: `True` if all boxes can be opened, else `False`
     """
-    Checks if all boxes can be unlocked
-
-    Args:
-        boxes (list): list of boxes to check
-
-    Returns:
-        bool: True if all boxes can be unlocked, False otherwise
-    """
-    if type(boxes) != list:
+    if not boxes or type(boxes) is not list:
         return False
-
-    # Create map
-    map = {}
-    for i, box in enumerate(boxes):
-        if i == 0:
-            map[i] = {
-                "open": True,
-                "items": box
-            }
-        else:
-            map[i] = {
-                "open": False,
-                "items": box
-            }
-
-    # Iterate map and open boxes
-    i = len(boxes)
-    while i > 0:
-        for box in map.values():
-            if box['open']:
-                # Open all boxes that box holds key for
-                for item in box['items']:
-                    if item < len(boxes) and item >= 0:
-                        map[item]['open'] = True
-        i -= 1
-
-    # Check if all boxes were opened
-    for box in map.values():
-        if not box['open']:
-            return False
-    return True
+    unlocked_boxes = [0]
+    for i in unlocked_boxes:
+        for key in boxes[i]:
+            if key not in unlocked_boxes and key < len(boxes):
+                unlocked_boxes.append(key)
+    return len(unlocked_boxes) == len(boxes)
