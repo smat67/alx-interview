@@ -1,36 +1,23 @@
 #!/usr/bin/node
-const argv = process.argv;
-const urlFilm = 'https://swapi-api.hbtn.io/api/films/';
-const urlMovie = `${urlFilm}${argv[2]}/`;
-
+// Prints all characters of a star wars movie
 const request = require('request');
+const util = require('util');
 
-request(urlMovie, function (error, response, body) {
-  if (error == null) {
-    const fbody = JSON.parse(body);
-    const characters = fbody.characters;
+const call = util.promisify(request);
 
-    if (characters && characters.length > 0) {
-      const limit = characters.length;
-      CharRequest(0, characters[0], characters, limit);
-    }
-  } else {
-    console.log(error);
-  }
-});
+const args = process.argv;
+const id = args[2];
 
-function CharRequest (idx, url, characters, limit) {
-  if (idx === limit) {
-    return;
-  }
-  request(url, function (error, response, body) {
-    if (!error) {
-      const rbody = JSON.parse(body);
-      console.log(rbody.name);
-      idx++;
-      CharRequest(idx, characters[idx], characters, limit);
-    } else {
-      console.error('error:', error);
+async function getCharacters () {
+  const res = await call(`https://swapi-api.alx-tools.com/api/films/${id}`);
+  return JSON.parse(res.body).characters;
+}
+
+getCharacters()
+  .then(async (characters) => {
+    for (const character of characters) {
+      const res = await call(character);
+      const name = JSON.parse(res.body).name;
+      console.log(name);
     }
   });
-}
